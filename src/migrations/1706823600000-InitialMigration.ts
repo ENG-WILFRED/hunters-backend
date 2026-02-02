@@ -2,6 +2,9 @@ import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 export class InitialMigration1706823600000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Ensure uuid generation function is available
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
     // Create Player entity table
     await queryRunner.createTable(
       new Table({
