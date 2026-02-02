@@ -1,7 +1,12 @@
 import { DataSource } from 'typeorm';
-import { config } from 'dotenv';
 
-config();
+// Load .env if available (guarded so environments without dotenv won't fail build)
+declare const require: any;
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available in this environment; rely on process.env
+}
 
 export default new DataSource({
   type: 'postgres',
