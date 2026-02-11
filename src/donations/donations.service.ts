@@ -17,8 +17,16 @@ export class DonationsService {
   }
 
   // MPesa stub: store a simulated receipt
-  async mpesaCallback(payload: { amount: number; donorName?: string; receipt?: string }) {
-    const d = this.repo.create({ amount: payload.amount, donorName: payload.donorName, mpesaReceipt: payload.receipt });
+  async mpesaCallback(payload: {
+    amount: number;
+    donorName?: string;
+    receipt?: string;
+  }) {
+    const d = this.repo.create({
+      amount: payload.amount,
+      donorName: payload.donorName,
+      mpesaReceipt: payload.receipt,
+    });
     return this.repo.save(d);
   }
 }

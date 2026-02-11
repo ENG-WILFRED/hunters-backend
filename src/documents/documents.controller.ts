@@ -26,7 +26,10 @@ export class DocumentsController {
   async download(@Param('id') id: string, @Res() res: Response) {
     const result = await this.svc.download(Number(id));
     res.setHeader('Content-Type', result.mime);
-    res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${result.filename}"`,
+    );
     res.send(result.buffer);
   }
 }

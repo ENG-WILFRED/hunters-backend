@@ -12,8 +12,17 @@ export class DocumentsService {
     @InjectRepository(Player) private playerRepo: Repository<Player>,
   ) {}
 
-  async create(data: { filename: string; base64: string; mime?: string; playerId?: number }) {
-    const doc = this.repo.create({ filename: data.filename, base64: data.base64, mime: data.mime });
+  async create(data: {
+    filename: string;
+    base64: string;
+    mime?: string;
+    playerId?: number;
+  }) {
+    const doc = this.repo.create({
+      filename: data.filename,
+      base64: data.base64,
+      mime: data.mime,
+    });
     if (data.playerId) {
       const p = await this.playerRepo.findOne({ where: { id: data.playerId } });
       if (p) doc.player = p;
@@ -34,6 +43,10 @@ export class DocumentsService {
   async download(id: number) {
     const d = await this.findOne(id);
     const buffer = Buffer.from(d.base64, 'base64');
-    return { buffer, filename: d.filename, mime: d.mime || 'application/octet-stream' };
+    return {
+      buffer,
+      filename: d.filename,
+      mime: d.mime || 'application/octet-stream',
+    };
   }
 }

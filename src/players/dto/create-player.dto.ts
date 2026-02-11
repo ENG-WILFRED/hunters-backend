@@ -13,6 +13,11 @@ export class CreatePlayerDto {
   @ApiProperty({ example: '+254712345678', required: false })
   phone?: string;
 
-  @ApiProperty({ example: 'MID', description: 'GK, DEF, MID, FWD', default: 'MID', enum: ['GK', 'DEF', 'MID', 'FWD'] })
+  @ApiProperty({
+    example: 'MID',
+    description: 'GK, DEF, MID, FWD',
+    default: 'MID',
+    enum: ['GK', 'DEF', 'MID', 'FWD'],
+  })
   position?: 'GK' | 'DEF' | 'MID' | 'FWD';
 }

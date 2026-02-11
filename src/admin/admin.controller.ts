@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Put, Body, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Put,
+  Body,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PlayersService } from '../players/players.service';
 import { DocumentsService } from '../documents/documents.service';
@@ -11,7 +19,11 @@ import { AdminGuard } from '../auth/admin.guard';
 @Controller('admin')
 @UseGuards(AuthGuard('jwt'), AdminGuard)
 export class AdminController {
-  constructor(private players: PlayersService, private docs: DocumentsService, private dons: DonationsService) {}
+  constructor(
+    private players: PlayersService,
+    private docs: DocumentsService,
+    private dons: DonationsService,
+  ) {}
 
   @Get('players')
   @ApiOperation({ summary: 'List players (admin)' })

@@ -9,6 +9,7 @@ import { DonationsModule } from './donations/donations.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -23,13 +24,17 @@ import { AdminModule } from './admin/admin.module';
       synchronize: false,
       migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
       migrationsRun: true,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl:
+        process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
     }),
     PlayersModule,
     DonationsModule,
     DocumentsModule,
     AuthModule,
     AdminModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

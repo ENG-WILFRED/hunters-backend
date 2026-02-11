@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Put, Delete, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Delete,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PlayersService } from './players.service';
@@ -9,7 +19,10 @@ import { UpdateStatsDto } from './dto/update-stats.dto';
 @ApiTags('Players')
 @Controller('players')
 export class PlayersController {
-  constructor(private svc: PlayersService, private docs: DocumentsService) {}
+  constructor(
+    private svc: PlayersService,
+    private docs: DocumentsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Register a new player' })
@@ -41,7 +54,12 @@ export class PlayersController {
     // accept multipart file, convert to base64 and store
     if (!file) return { ok: false };
     const b64 = file.buffer.toString('base64');
-    return this.docs.create({ filename: file.originalname, base64: b64, mime: file.mimetype, playerId: Number(id) });
+    return this.docs.create({
+      filename: file.originalname,
+      base64: b64,
+      mime: file.mimetype,
+      playerId: Number(id),
+    });
   }
 
   @Delete(':id')

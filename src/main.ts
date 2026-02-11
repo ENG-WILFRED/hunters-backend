@@ -10,7 +10,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Hunters API')
-    .setDescription('API for managing the football team, players, donations, and documents')
+    .setDescription(
+      'API for managing the football team, players, donations, and documents',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -19,8 +21,12 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
-  console.log(`✅ Server running at http://localhost:${process.env.PORT ?? 3000}`);
-  console.log(`📚 Swagger docs available at http://localhost:${process.env.PORT ?? 3000}/docs`);
+  console.log(
+    `✅ Server running at http://localhost:${process.env.PORT ?? 3000}`,
+  );
+  console.log(
+    `📚 Swagger docs available at http://localhost:${process.env.PORT ?? 3000}/docs`,
+  );
 }
 bootstrap().catch((err) => {
   console.error('❌ Bootstrap failed:', err);

@@ -48,6 +48,10 @@ export class Player {
   getRating(): number {
     // simple rating formula
     if (this.matchesPlayed <= 0) return 0;
-    return Math.round(((this.goals * 4 + this.assists * 3) / this.matchesPlayed) * 10) / 10;
+    return (
+      Math.round(
+        ((this.goals * 4 + this.assists * 3) / this.matchesPlayed) * 10,
+      ) / 10
+    );
   }
 }

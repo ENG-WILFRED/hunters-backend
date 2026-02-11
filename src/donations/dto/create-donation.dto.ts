@@ -7,6 +7,10 @@ export class CreateDonationDto {
   @ApiProperty({ example: 'Alice Smith', required: false })
   donorName?: string;
 
-  @ApiProperty({ example: 1, required: false, description: 'Player ID (optional)' })
+  @ApiProperty({
+    example: 1,
+    required: false,
+    description: 'Player ID (optional)',
+  })
   playerId?: number;
 }

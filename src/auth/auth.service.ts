@@ -5,12 +5,18 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private players: PlayersService, private jwt: JwtService) {}
+  constructor(
+    private players: PlayersService,
+    private jwt: JwtService,
+  ) {}
 
   async register(data: any) {
     // hash password
     const hashed = await bcrypt.hash(data.password, 10);
-    const created = (await this.players.create({ ...data, password: hashed })) as any;
+    const created = (await this.players.create({
+      ...data,
+      password: hashed,
+    })) as any;
     const payload = { sub: created.id, isAdmin: !!created.isAdmin };
     return { access_token: this.jwt.sign(payload), user: created };
   }
@@ -18,7 +24,9 @@ export class AuthService {
   async validateUser(emailOrPhone: string, pass: string) {
     // find by email or phone
     const all = await this.players.findAll();
-    const user = all.find((u) => u.email === emailOrPhone || u.phone === emailOrPhone);
+    const user = all.find(
+      (u) => u.email === emailOrPhone || u.phone === emailOrPhone,
+    );
     if (!user) return null;
     const ok = await bcrypt.compare(pass, user.password || '');
     if (!ok) return null;

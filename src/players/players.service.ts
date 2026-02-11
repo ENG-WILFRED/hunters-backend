@@ -17,7 +17,10 @@ export class PlayersService {
   }
 
   async findOne(id: number) {
-    const p = await this.repo.findOne({ where: { id }, relations: ['documents', 'donations'] });
+    const p = await this.repo.findOne({
+      where: { id },
+      relations: ['documents', 'donations'],
+    });
     if (!p) throw new NotFoundException('Player not found');
     return p;
   }
