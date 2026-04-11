@@ -5,9 +5,6 @@ export class InitialMigration1706823600000 implements MigrationInterface {
     // Ensure uuid generation function is available
     await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
-    // Create the football schema
-    await queryRunner.query('CREATE SCHEMA IF NOT EXISTS football;');
-
     // Create Player entity table in football schema
     await queryRunner.query(`
       CREATE TABLE football.player (
@@ -59,6 +56,5 @@ export class InitialMigration1706823600000 implements MigrationInterface {
     await queryRunner.query('DROP TABLE IF EXISTS football.document;');
     await queryRunner.query('DROP TABLE IF EXISTS football.donation;');
     await queryRunner.query('DROP TABLE IF EXISTS football.player;');
-    await queryRunner.query('DROP SCHEMA IF EXISTS football;');
   }
 }
