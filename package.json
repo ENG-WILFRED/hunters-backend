@@ -22,7 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npx typeorm",
     "migration:generate": "npx typeorm migration:generate -d dist/ormconfig.js",
-    "migration:run": "node -e \"require('dotenv').config(); const { Client } = require('pg'); const client = new Client({ connectionString: process.env.DATABASE_URL, ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false }); client.connect().then(() => client.query('CREATE SCHEMA IF NOT EXISTS football;')).then(() => client.end()).then(() => require('child_process').execSync('npx typeorm migration:run -d dist/ormconfig.js', { stdio: 'inherit' }));\"",
+    "migration:run": "node scripts/migration-runner.js",
     "migration:revert": "npx typeorm migration:revert -d dist/ormconfig.js",
     "migration:show": "npx typeorm migration:show -d dist/ormconfig.js"
   },
