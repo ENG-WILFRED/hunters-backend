@@ -37,15 +37,15 @@ export class PostsService {
     return query.getMany();
   }
 
-  findById(id: number) {
+  findById(id: string) {
     return this.repo.findOne({ where: { id } });
   }
 
-  update(id: number, data: Partial<CreatePostDto>) {
+  update(id: string, data: Partial<CreatePostDto>) {
     return this.repo.update(id, data);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repo.delete(id);
   }
 }

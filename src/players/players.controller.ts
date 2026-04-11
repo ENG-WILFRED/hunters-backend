@@ -39,13 +39,13 @@ export class PlayersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get player by ID' })
   findOne(@Param('id') id: string) {
-    return this.svc.findOne(Number(id));
+    return this.svc.findOne(id);
   }
 
   @Put(':id/stats')
   @ApiOperation({ summary: 'Update player match statistics' })
   updateStats(@Param('id') id: string, @Body() body: UpdateStatsDto) {
-    return this.svc.updateStats(Number(id), body);
+    return this.svc.updateStats(id, body);
   }
 
   @Post(':id/documents')
@@ -58,13 +58,13 @@ export class PlayersController {
       filename: file.originalname,
       base64: b64,
       mime: file.mimetype,
-      playerId: Number(id),
+      playerId: id,
     });
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a player' })
   remove(@Param('id') id: string) {
-    return this.svc.remove(Number(id));
+    return this.svc.remove(id);
   }
 }

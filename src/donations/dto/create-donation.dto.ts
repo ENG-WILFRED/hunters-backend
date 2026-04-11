@@ -19,7 +19,6 @@ export class CreateDonationDto {
     description: 'Player ID (optional)',
   })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  playerId?: number;
+  @IsString()
+  playerId?: string;
 }

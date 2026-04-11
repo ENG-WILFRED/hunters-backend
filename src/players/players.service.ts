@@ -16,7 +16,7 @@ export class PlayersService {
     return this.repo.find({ relations: ['documents', 'donations'] });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const p = await this.repo.findOne({
       where: { id },
       relations: ['documents', 'donations'],
@@ -25,13 +25,13 @@ export class PlayersService {
     return p;
   }
 
-  async updateStats(id: number, stats: Partial<Player>) {
+  async updateStats(id: string, stats: Partial<Player>) {
     const p = await this.findOne(id);
     Object.assign(p, stats);
     return this.repo.save(p);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const p = await this.findOne(id);
     return this.repo.remove(p);
   }

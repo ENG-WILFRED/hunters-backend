@@ -34,13 +34,13 @@ export class AdminController {
   @Put('players/:id')
   @ApiOperation({ summary: 'Edit player (admin)' })
   editPlayer(@Param('id') id: string, @Body() body: any) {
-    return this.players.updateStats(Number(id), body);
+    return this.players.updateStats(id, body);
   }
 
   @Delete('players/:id')
   @ApiOperation({ summary: 'Delete player (admin)' })
   deletePlayer(@Param('id') id: string) {
-    return this.players.remove(Number(id));
+    return this.players.remove(id);
   }
 
   @Get('documents')

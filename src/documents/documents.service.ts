@@ -16,7 +16,7 @@ export class DocumentsService {
     filename: string;
     base64: string;
     mime?: string;
-    playerId?: number;
+    playerId?: string;
   }) {
     const doc = this.repo.create({
       filename: data.filename,
@@ -34,13 +34,13 @@ export class DocumentsService {
     return this.repo.find({ relations: ['player'] });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const d = await this.repo.findOne({ where: { id }, relations: ['player'] });
     if (!d) throw new NotFoundException('Document not found');
     return d;
   }
 
-  async download(id: number) {
+  async download(id: string) {
     const d = await this.findOne(id);
     const buffer = Buffer.from(d.base64, 'base64');
     return {

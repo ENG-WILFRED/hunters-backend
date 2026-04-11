@@ -8,8 +8,8 @@ import {
 
 @Entity()
 export class Post {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

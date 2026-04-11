@@ -9,8 +9,8 @@ import { Player } from './player.entity';
 
 @Entity()
 export class Donation {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
@@ -20,6 +20,9 @@ export class Donation {
 
   @Column({ nullable: true })
   mpesaReceipt?: string;
+
+  @Column({ nullable: true })
+  playerId?: string;
 
   @ManyToOne(() => Player, (p) => p.donations, { nullable: true })
   player?: Player;

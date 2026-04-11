@@ -18,7 +18,6 @@ export class CreateDocumentDto {
 
   @ApiProperty({ example: 1, required: false, description: 'Player ID' })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  playerId?: number;
+  @IsString()
+  playerId?: string;
 }

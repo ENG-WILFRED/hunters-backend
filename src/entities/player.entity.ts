@@ -6,8 +6,8 @@ export type Position = 'GK' | 'DEF' | 'MID' | 'FWD';
 
 @Entity()
 export class Player {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   firstName: string;

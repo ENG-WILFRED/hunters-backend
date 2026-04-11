@@ -24,7 +24,7 @@ export class DocumentsController {
   @Get(':id/download')
   @ApiOperation({ summary: 'Download a document (regenerate from base64)' })
   async download(@Param('id') id: string, @Res() res: Response) {
-    const result = await this.svc.download(Number(id));
+    const result = await this.svc.download(id);
     res.setHeader('Content-Type', result.mime);
     res.setHeader(
       'Content-Disposition',

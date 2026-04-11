@@ -55,19 +55,19 @@ export class PostsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a post by ID' })
-  findById(@Param('id') id: number) {
+  findById(@Param('id') id: string) {
     return this.svc.findById(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a post' })
-  update(@Param('id') id: number, @Body() body: Partial<CreatePostDto>) {
+  update(@Param('id') id: string, @Body() body: Partial<CreatePostDto>) {
     return this.svc.update(id, body);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a post' })
-  remove(@Param('id') id: number) {
+  remove(@Param('id') id: string) {
     return this.svc.remove(id);
   }
 }
