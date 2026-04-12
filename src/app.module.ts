@@ -20,6 +20,7 @@ import { PostsModule } from './posts/posts.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
+      schema: 'football',
       entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: false,
       migrations: [join(__dirname, 'migrations', '*.{ts,js}')],

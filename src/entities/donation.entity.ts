@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 import { Player } from './player.entity';
 
@@ -21,11 +23,12 @@ export class Donation {
   @Column({ nullable: true })
   mpesaReceipt?: string;
 
-  @Column({ nullable: true })
-  playerId?: string;
-
   @ManyToOne(() => Player, (p) => p.donations, { nullable: true })
+  @JoinColumn({ name: 'playerId' })
   player?: Player;
+
+  @RelationId((donation: Donation) => donation.player)
+  playerId?: string;
 
   @CreateDateColumn()
   createdAt: Date;
