@@ -11,7 +11,7 @@ try {
 export default new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  schema: 'football',
+  schema: 'hunters',
   entities: ['dist/src/**/*.entity.js'],
   migrations: ['dist/src/migrations/*.js'],
   migrationsTableName: '_typeorm_migrations',

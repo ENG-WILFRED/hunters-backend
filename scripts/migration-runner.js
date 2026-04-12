@@ -27,8 +27,8 @@ async function runMigrations() {
     console.log('Connecting to database...');
     await client.connect();
 
-    console.log('Creating football schema if it does not exist...');
-    await client.query('CREATE SCHEMA IF NOT EXISTS football;');
+    console.log('Creating hunters schema if it does not exist...');
+    await client.query('CREATE SCHEMA IF NOT EXISTS hunters;');
 
     console.log('Schema created successfully. Running TypeORM migrations...');
     await client.end();

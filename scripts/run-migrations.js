@@ -20,27 +20,27 @@ async function runMigrations() {
   try {
     await initialDataSource.initialize();
 
-    // Check if football schema exists
+    // Check if hunters schema exists
     const schemaExists = await initialDataSource.query(`
       SELECT EXISTS (
         SELECT 1 FROM information_schema.schemata
-        WHERE schema_name = 'football'
+        WHERE schema_name = 'hunters'
       );
     `);
 
     if (!schemaExists[0].exists) {
-      console.log('Football schema does not exist. Running schema creation migration first...');
+      console.log('Hunters schema does not exist. Running schema creation migration first...');
 
       // Run only the schema creation migration
       await initialDataSource.runMigrations();
 
       await initialDataSource.destroy();
 
-      // Now create a new datasource with the football schema
-      const footballDataSource = new DataSource({
+      // Now create a new datasource with the hunters schema
+      const huntersDataSource = new DataSource({
         type: 'postgres',
         url: process.env.DATABASE_URL,
-        schema: 'football',
+        schema: 'hunters',
         entities: ['dist/src/**/*.entity.js'],
         migrations: ['dist/src/migrations/*.js'],
         migrationsTableName: '_typeorm_migrations',
@@ -49,13 +49,13 @@ async function runMigrations() {
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       });
 
-      await footballDataSource.initialize();
-      console.log('Running remaining migrations in football schema...');
-      await footballDataSource.runMigrations();
-      await footballDataSource.destroy();
+      await huntersDataSource.initialize();
+      console.log('Running remaining migrations in hunters schema...');
+      await huntersDataSource.runMigrations();
+      await huntersDataSource.destroy();
 
     } else {
-      console.log('Football schema already exists. Running migrations normally...');
+      console.log('Hunters schema already exists. Running migrations normally...');
       await initialDataSource.runMigrations();
       await initialDataSource.destroy();
     }
