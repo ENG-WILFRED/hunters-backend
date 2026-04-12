@@ -8,7 +8,7 @@ export class CreateHuntersSchema1775981781721 implements MigrationInterface {
 
         // Create Player entity table in hunters schema
         await queryRunner.query(`
-            CREATE TABLE hunters.player (
+            CREATE TABLE IF NOT EXISTS hunters.player (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "firstName" VARCHAR NOT NULL,
                 "lastName" VARCHAR NOT NULL,
@@ -27,7 +27,7 @@ export class CreateHuntersSchema1775981781721 implements MigrationInterface {
 
         // Create Donation entity table in hunters schema
         await queryRunner.query(`
-            CREATE TABLE hunters.donation (
+            CREATE TABLE IF NOT EXISTS hunters.donation (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 amount DECIMAL(10, 2) NOT NULL,
                 "donorName" VARCHAR,
@@ -39,7 +39,7 @@ export class CreateHuntersSchema1775981781721 implements MigrationInterface {
 
         // Create Document entity table in hunters schema
         await queryRunner.query(`
-            CREATE TABLE hunters.document (
+            CREATE TABLE IF NOT EXISTS hunters.document (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 filename VARCHAR NOT NULL,
                 base64 TEXT NOT NULL,
@@ -52,7 +52,7 @@ export class CreateHuntersSchema1775981781721 implements MigrationInterface {
 
         // Create Post entity table in hunters schema
         await queryRunner.query(`
-            CREATE TABLE hunters.post (
+            CREATE TABLE IF NOT EXISTS hunters.post (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 name VARCHAR NOT NULL,
                 message TEXT NOT NULL,
