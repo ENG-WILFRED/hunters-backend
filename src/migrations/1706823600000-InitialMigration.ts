@@ -2,20 +2,26 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class InitialMigration1706823600000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Ensure uuid generation function is available
-    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    // Drop existing tables if they exist with wrong structure
+    await queryRunner.query('DROP TABLE IF EXISTS football.player;');
+    await queryRunner.query('DROP TABLE IF EXISTS football.donation;');
+    await queryRunner.query('DROP TABLE IF EXISTS football.document;');
+    await queryRunner.query('DROP TABLE IF EXISTS football.post;');
 
     // Create Player entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE IF NOT EXISTS football.player (
+      CREATE TABLE football.player (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name VARCHAR NOT NULL,
-        position VARCHAR NOT NULL,
-        "jerseyNumber" INT NOT NULL UNIQUE,
-        appearances INT DEFAULT 0,
+        "firstName" VARCHAR NOT NULL,
+        "lastName" VARCHAR NOT NULL,
+        email VARCHAR,
+        phone VARCHAR,
+        password VARCHAR,
+        "isAdmin" BOOLEAN DEFAULT FALSE,
+        position VARCHAR DEFAULT 'MID',
+        "matchesPlayed" INT DEFAULT 0,
         goals INT DEFAULT 0,
         assists INT DEFAULT 0,
-        cards INT DEFAULT 0,
         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -23,29 +29,35 @@ export class InitialMigration1706823600000 implements MigrationInterface {
 
     // Create Donation entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE IF NOT EXISTS football.donation (
+      CREATE TABLE football.donation (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         amount DECIMAL(10, 2) NOT NULL,
-        currency VARCHAR DEFAULT 'KES',
-        "donorName" VARCHAR NOT NULL,
-        "donorEmail" VARCHAR,
-        "mpesaTransactionId" VARCHAR UNIQUE,
-        status VARCHAR DEFAULT 'pending',
-        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        "donorName" VARCHAR,
+        "mpesaReceipt" VARCHAR,
+        "playerId" UUID,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
     // Create Document entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE IF NOT EXISTS football.document (
+      CREATE TABLE football.document (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        title VARCHAR NOT NULL,
-        description TEXT,
-        "filePath" VARCHAR NOT NULL,
-        "fileSize" INT,
-        "mimeType" VARCHAR,
-        "uploadedBy" VARCHAR,
+        filename VARCHAR NOT NULL,
+        base64 TEXT NOT NULL,
+        mime VARCHAR,
+        "playerId" UUID,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Create Post entity table in football schema
+    await queryRunner.query(`
+      CREATE TABLE football.post (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        name VARCHAR NOT NULL,
+        message TEXT NOT NULL,
         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -53,6 +65,7 @@ export class InitialMigration1706823600000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('DROP TABLE IF EXISTS football.post;');
     await queryRunner.query('DROP TABLE IF EXISTS football.document;');
     await queryRunner.query('DROP TABLE IF EXISTS football.donation;');
     await queryRunner.query('DROP TABLE IF EXISTS football.player;');
