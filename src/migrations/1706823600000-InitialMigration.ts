@@ -7,7 +7,7 @@ export class InitialMigration1706823600000 implements MigrationInterface {
 
     // Create Player entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE football.player (
+      CREATE TABLE IF NOT EXISTS football.player (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name VARCHAR NOT NULL,
         position VARCHAR NOT NULL,
@@ -23,7 +23,7 @@ export class InitialMigration1706823600000 implements MigrationInterface {
 
     // Create Donation entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE football.donation (
+      CREATE TABLE IF NOT EXISTS football.donation (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         amount DECIMAL(10, 2) NOT NULL,
         currency VARCHAR DEFAULT 'KES',
@@ -38,7 +38,7 @@ export class InitialMigration1706823600000 implements MigrationInterface {
 
     // Create Document entity table in football schema
     await queryRunner.query(`
-      CREATE TABLE football.document (
+      CREATE TABLE IF NOT EXISTS football.document (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         title VARCHAR NOT NULL,
         description TEXT,
