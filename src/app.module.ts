@@ -9,6 +9,7 @@ import { DonationsModule } from './donations/donations.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { MatchesModule } from './matches/matches.module';
 import { PostsModule } from './posts/posts.module';
 
 @Module({
@@ -36,6 +37,7 @@ import { PostsModule } from './posts/posts.module';
     AuthModule,
     AdminModule,
     PostsModule,
+    MatchesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

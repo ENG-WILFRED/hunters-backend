@@ -1,7 +1,9 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import request from 'supertest';
+import { Repository } from 'typeorm';
 import { AppController } from '../src/app.controller';
 import { AppService } from '../src/app.service';
 import { PlayersModule } from '../src/players/players.module';
@@ -10,19 +12,22 @@ import { DocumentsModule } from '../src/documents/documents.module';
 import { AuthModule } from '../src/auth/auth.module';
 import { AdminModule } from '../src/admin/admin.module';
 import { PostsModule } from '../src/posts/posts.module';
+import { MatchesModule } from '../src/matches/matches.module';
 import { Player } from '../src/entities/player.entity';
 import { Document } from '../src/entities/document.entity';
 import { Donation } from '../src/entities/donation.entity';
 import { Post as BlogPost } from '../src/entities/post.entity';
+import { Fixture } from '../src/entities/fixture.entity';
 
 jest.setTimeout(20000);
 
 describe('API Endpoints (e2e)', () => {
   let app: INestApplication;
   let adminToken: string;
-  let playerId: number;
-  let documentId: number;
-  let postId: number;
+  let playerId: string;
+  let documentId: string;
+  let postId: string;
+  let fixtureRepo: Repository<Fixture>;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -31,16 +36,18 @@ describe('API Endpoints (e2e)', () => {
           type: 'sqlite',
           database: ':memory:',
           dropSchema: true,
-          entities: [Player, Document, Donation, BlogPost],
+          entities: [Player, Document, Donation, BlogPost, Fixture],
           synchronize: true,
           logging: false,
         }),
+        TypeOrmModule.forFeature([Fixture]),
         PlayersModule,
         DonationsModule,
         DocumentsModule,
         AuthModule,
         AdminModule,
         PostsModule,
+        MatchesModule,
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -49,6 +56,28 @@ describe('API Endpoints (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
+
+    fixtureRepo = moduleFixture.get<Repository<Fixture>>(getRepositoryToken(Fixture));
+    await fixtureRepo.save([
+      {
+        homeTeam: 'Hunters FC',
+        awayTeam: 'Rugongo',
+        homeScore: 1,
+        awayScore: 0,
+        kickOff: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        venue: 'Weru Stadium',
+        status: 'Finished',
+      },
+      {
+        homeTeam: 'Hunters FC',
+        awayTeam: 'Munchez Boys',
+        homeScore: null,
+        awayScore: null,
+        kickOff: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        venue: 'Weru Stadium',
+        status: 'Upcoming',
+      },
+    ]);
   });
 
   afterAll(async () => {
@@ -255,5 +284,107 @@ describe('API Endpoints (e2e)', () => {
       .get('/admin/donations')
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
+  });
+
+  it('GET /matches/upcoming returns upcoming matches', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/matches/upcoming')
+      .expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.some((match: any) => match.awayTeam === 'Munchez Boys')).toBe(true);
+  });
+
+  it('GET /matches/recent returns recent finished matches', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/matches/recent')
+      .expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.some((match: any) => match.homeTeam === 'Hunters FC')).toBe(true);
+  });
+
+  it('GET /matches/league returns league table entries', async () => {
+    const response = await request(app.getHttpServer()).get('/matches/league').expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body[0]).toMatchObject({
+      team: 'Hunters FC',
+      played: 1,
+      wins: 1,
+      draws: 0,
+      losses: 0,
+      goalDifference: 1,
+      points: 3,
+    });
+  });
+
+  it('GET /matches/statistics returns team statistics summary', async () => {
+    const response = await request(app.getHttpServer()).get('/matches/statistics').expect(200);
+
+    expect(response.body).toMatchObject({
+      wins: 1,
+      goalsScored: 1,
+      goalsConceded: 0,
+      homeWins: 1,
+    });
+  });
+
+  it('POST /matches creates a new upcoming match', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/matches')
+      .send({
+        homeTeam: 'Hunters Junior',
+        awayTeam: 'Weru',
+        kickOff: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+        venue: 'Kanamba Ground',
+        status: 'Friendly',
+      })
+      .expect(201);
+
+    expect(response.body.id).toBeDefined();
+    expect(response.body.homeTeam).toBe('Hunters Junior');
+    expect(response.body.awayTeam).toBe('Weru');
+  });
+
+  it('PUT /matches/:id updates a match with final score', async () => {
+    const upcoming = await request(app.getHttpServer()).get('/matches/upcoming');
+    const upcomingMatch = upcoming.body[0];
+
+    const response = await request(app.getHttpServer())
+      .put(`/matches/${upcomingMatch.id}`)
+      .send({
+        homeScore: 2,
+        awayScore: 1,
+      })
+      .expect(200);
+
+    expect(response.body.homeScore).toBe(2);
+    expect(response.body.awayScore).toBe(1);
+    expect(response.body.status).toBe('Finished');
+  });
+
+  it('GET /matches/recent includes updated match after scoring', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/matches/recent')
+      .expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBeGreaterThanOrEqual(2);
+    expect(response.body.some((match: any) => match.homeTeam === 'Hunters FC' && match.awayTeam === 'Munchez Boys')).toBe(true);
+  });
+
+  it('GET /matches/league correctly calculates standings from finished matches', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/matches/league')
+      .expect(200);
+
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBeGreaterThanOrEqual(2);
+    
+    const huntersFC = response.body.find((row: any) => row.team === 'Hunters FC');
+    expect(huntersFC).toBeDefined();
+    expect(huntersFC.played).toBeGreaterThanOrEqual(1);
+    expect(huntersFC.wins).toBeGreaterThanOrEqual(1);
   });
 });
